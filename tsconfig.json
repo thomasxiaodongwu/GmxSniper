@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",          // 编译的目标版本
+    "module": "commonjs",        // 使用的模块系统
+    "strict": true,              // 启用所有严格类型检查选项
+    "esModuleInterop": true,     // 启用 ES 模块互操作性
+    "skipLibCheck": true,        // 跳过库的类型检查
+    "forceConsistentCasingInFileNames": true // 文件名大小写一致性检查
+  },
+  "include": ["src/**/*"]
+}
