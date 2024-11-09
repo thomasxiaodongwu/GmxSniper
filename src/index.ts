@@ -26,5 +26,5 @@ contract.events.EventLog1({
     console.log('eventName:', event.returnValues.eventName);
     console.log('eventNameHash:', event.returnValues.eventNameHash);
     console.log('topic1:', event.returnValues.topic1);
-    console.log('eventData:', event.returnValues.eventData);
+    console.log('eventData:', JSON.stringify(event.returnValues.eventData));
 });
