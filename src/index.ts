@@ -4,7 +4,7 @@ import path from 'path';
 
 console.log(__dirname);
 const web3 = new Web3('https://mainnet.infura.io/v3/e57cbf7c6caa4c81aef80604caea87e3');
-const abiPath = path.resolve(__dirname, 'EventEmitter.json');
+const abiPath = path.resolve(__dirname+'/abi', 'EventEmitter.json');
 const contractABI = JSON.parse(fs.readFileSync(abiPath, 'utf-8'));
 const contractAddress = '0xC8ee91A54287DB53897056e12D9819156D3822Fb';
 
