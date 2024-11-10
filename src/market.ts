@@ -24,7 +24,7 @@ let init = 270691583;
 // 订阅事件
 while (init <= blockNumber) {
     contract.events.EventLog1({
-        filter: {eventName:"MarketCreated"}, // 可选：根据需要过滤事件
+        filter: {}, // 可选：根据需要过滤事件
         fromBlock: init,
         toBlock: init + 20000
     }, (error: any, event: { returnValues: { msgSender: any; eventName: any; eventNameHash: any; topic1: any; eventData: any; }; }) => {
@@ -32,12 +32,14 @@ while (init <= blockNumber) {
             console.error('Error:', error);
             return;
         }
-        console.log('Market received:');
-        console.log('msgSender:', event.returnValues.msgSender);
         console.log('eventName:', event.returnValues.eventName);
-        console.log('eventNameHash:', event.returnValues.eventNameHash);
-        console.log('topic1:', event.returnValues.topic1);
-        console.log('eventData:', JSON.stringify(event.returnValues.eventData));
+        if(event.returnValues.eventName === 'MarketCreated') {
+            console.log('Market received:');
+            console.log('msgSender:', event.returnValues.msgSender);
+            console.log('eventNameHash:', event.returnValues.eventNameHash);
+            console.log('topic1:', event.returnValues.topic1);
+            console.log('eventData:', JSON.stringify(event.returnValues.eventData));
+        }
     });
     init += 20000;
 }
