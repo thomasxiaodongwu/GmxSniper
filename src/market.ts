@@ -20,13 +20,13 @@ web3Http.eth.getBlock('latest', (error, latestBlock) => {
 
 // 创建合约实例
 const contract = new web3.eth.Contract(contractABI, contractAddress);
-let init = 2000;
+let init = 270691583;
 // 订阅事件
 while (init <= blockNumber) {
     contract.events.EventLog1({
         filter: {eventName:"MarketCreated"}, // 可选：根据需要过滤事件
         fromBlock: init,
-        toBlock: init + 5000
+        toBlock: init + 20000
     }, (error: any, event: { returnValues: { msgSender: any; eventName: any; eventNameHash: any; topic1: any; eventData: any; }; }) => {
         if (error) {
             console.error('Error:', error);
@@ -39,5 +39,5 @@ while (init <= blockNumber) {
         console.log('topic1:', event.returnValues.topic1);
         console.log('eventData:', JSON.stringify(event.returnValues.eventData));
     });
-    init += 5000;
+    init += 20000;
 }
