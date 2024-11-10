@@ -17,6 +17,7 @@ let startBlock = 270832685;
 
 // 查询事件的函数
 async function queryEvents() {
+    console.log(`start`);
     try {
         const latestBlock = await web3.eth.getBlockNumber();
 
