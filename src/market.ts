@@ -1,45 +1,44 @@
 import Web3 from 'web3';
-import fs from 'fs';
-import path from 'path';
+import path from "path";
+import fs from "fs";
 
-console.log(__dirname);
-const web3Http = new Web3('https://arb-mainnet.g.alchemy.com/v2/Z08SBQ9CRg6OC8LhlObkEqWrDJyjY2CS');
-const web3 = new Web3('wss://arb-mainnet.g.alchemy.com/v2/Z08SBQ9CRg6OC8LhlObkEqWrDJyjY2CS');
+// 初始化 Web3
+const web3 = new Web3('https://mainnet.infura.io/v3/e57cbf7c6caa4c81aef80604caea87e3');
+
 const abiPath = path.resolve(__dirname+'/abi', 'EventEmitter.json');
 const contractABI = JSON.parse(fs.readFileSync(abiPath, 'utf-8'));
 const contractAddress = '0xC8ee91A54287DB53897056e12D9819156D3822Fb';
-let blockNumber = 0;
-web3Http.eth.getBlock('latest', (error, latestBlock) => {
-    if (error) {
-        console.error('Error fetching latest block:', error);
-    } else {
-        blockNumber = latestBlock.number;
-        console.log('Latest Block Number:', blockNumber);
-    }
-});
 
 // 创建合约实例
 const contract = new web3.eth.Contract(contractABI, contractAddress);
-let init = 270691583;
-// 订阅事件
-while (init <= blockNumber) {
-    contract.events.EventLog1({
-        filter: {}, // 可选：根据需要过滤事件
-        fromBlock: init,
-        toBlock: init + 20000
-    }, (error: any, event: { returnValues: { msgSender: any; eventName: any; eventNameHash: any; topic1: any; eventData: any; }; }) => {
-        if (error) {
-            console.error('Error:', error);
-            return;
+
+// 从起始区块开始
+let startBlock = 270832685;
+
+// 查询事件的函数
+async function queryEvents() {
+    try {
+        const latestBlock = await web3.eth.getBlockNumber();
+
+        while (startBlock <= latestBlock) {
+            const endBlock = Math.min(startBlock + 20000, latestBlock);
+
+            console.log(`Querying blocks from ${startBlock} to ${endBlock}`);
+
+            const events = await contract.getPastEvents('EventLog1', {
+                fromBlock: startBlock,
+                toBlock: endBlock
+            });
+
+            events.forEach(event => {
+                console.log('Event received:', JSON.stringify(event.returnValues));
+            });
+
+            startBlock = endBlock + 1;
         }
-        console.log('eventName:', event.returnValues.eventName);
-        if(event.returnValues.eventName === 'MarketCreated') {
-            console.log('Market received:');
-            console.log('msgSender:', event.returnValues.msgSender);
-            console.log('eventNameHash:', event.returnValues.eventNameHash);
-            console.log('topic1:', event.returnValues.topic1);
-            console.log('eventData:', JSON.stringify(event.returnValues.eventData));
-        }
-    });
-    init += 20000;
+    } catch (error) {
+        console.error('Error fetching events:', error);
+    }
 }
+
+queryEvents();
