@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 
 // 初始化 Web3
-const web3 = new Web3('https://mainnet.infura.io/v3/e57cbf7c6caa4c81aef80604caea87e3');
+const web3 = new Web3('https://arb-mainnet.g.alchemy.com/v2/Z08SBQ9CRg6OC8LhlObkEqWrDJyjY2CS');
 
 const abiPath = path.resolve(__dirname+'/abi', 'EventEmitter.json');
 const contractABI = JSON.parse(fs.readFileSync(abiPath, 'utf-8'));
@@ -13,7 +13,7 @@ const contractAddress = '0xC8ee91A54287DB53897056e12D9819156D3822Fb';
 const contract = new web3.eth.Contract(contractABI, contractAddress);
 
 // 从起始区块开始
-let startBlock = 270832685;
+let startBlock = 200000000;
 
 // 查询事件的函数
 async function queryEvents() {
@@ -28,11 +28,16 @@ async function queryEvents() {
 
             const events = await contract.getPastEvents('EventLog1', {
                 fromBlock: startBlock,
-                toBlock: endBlock
+                toBlock: endBlock,
+                filter: {
+                    eventName: "MarketCreated"
+                }
             });
 
             events.forEach(event => {
-                console.log('Event received:', JSON.stringify(event.returnValues));
+                if(event.returnValues.eventName === "MarketCreated")
+                    console.log('eventName:', event.returnValues.eventName);
+                //console.log('Event received:', JSON.stringify(event.returnValues));
             });
 
             startBlock = endBlock + 1;

@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 console.log(__dirname);
-// const web3 = new Web3('https://mainnet.infura.io/v3/e57cbf7c6caa4c81aef80604caea87e3');
+// const web3 = new Web3('https://arb-mainnet.g.alchemy.com/v2/Z08SBQ9CRg6OC8LhlObkEqWrDJyjY2CS');
 const web3 = new Web3('wss://arb-mainnet.g.alchemy.com/v2/Z08SBQ9CRg6OC8LhlObkEqWrDJyjY2CS');
 const abiPath = path.resolve(__dirname+'/abi', 'EventEmitter.json');
 const contractABI = JSON.parse(fs.readFileSync(abiPath, 'utf-8'));
