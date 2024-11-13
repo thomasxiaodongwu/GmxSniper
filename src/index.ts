@@ -33,10 +33,10 @@ contract.events.EventLog1({
             const tokenInfo1 = getTokenInfo(result.market.indexToken);
             const tokenInfo2 = getTokenInfo(result.market.shortToken);
             console.log('Market:', tokenInfo1?.symbol + "|"+tokenInfo2?.symbol);
-            console.log('borrowingFactorPerSecondForLongs:', calculate(result.borrowingFactorPerSecondForLongs.toString()));
-            console.log('borrowingFactorPerSecondForShorts:', calculate(result.borrowingFactorPerSecondForShorts.toString()));
+            console.log('borrowingFactorPerSecondForLongs:', calculate(result.borrowingFactorPerSecondForLongs.toString()).toString());
+            console.log('borrowingFactorPerSecondForShorts:', calculate(result.borrowingFactorPerSecondForShorts.toString()).toString());
             console.log('Is Long:', data.boolItems.items[0].value);
-            console.log('Next Value:', calculate(data.uintItems.items[0].value));
+            console.log('Next Value:', calculate(data.uintItems.items[0].value).toString());
         }
     }
 });
