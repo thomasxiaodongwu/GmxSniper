@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import path from "path";
 import fs from "fs";
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import {ethers} from "ethers";
 
 const web3 = new Web3('https://arb-mainnet.g.alchemy.com/v2/Z08SBQ9CRg6OC8LhlObkEqWrDJyjY2CS');
 const marketList = web3.utils.keccak256(web3.eth.abi.encodeParameter('string', 'MARKET_LIST'));
@@ -46,7 +46,7 @@ function getTokenPrice({ token, pricesByTokenAddress }) {
     return price;
 }
 
-async function getTokenPrices(marketKey: string){
+async function getTokenPrices(marketKey: string) : Promise <MarketInfo | undefined>   {
     try {
         const tokenPricesResponse = await fetch(getTickersUrl());
         const tokenPrices = await tokenPricesResponse.json();
@@ -75,10 +75,68 @@ async function getTokenPrices(marketKey: string){
         }
         console.log("get into market detail:");
         const marketInfos = await contractReader.methods.getMarketInfo("0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8", marketPrices, marketKey).call();
-        console.log(JSON.stringify(marketInfos));
+        return parseMarketInfo(marketInfos);
     } catch (error) {
         console.error('Error in main:', error);
     }
+}
+
+function parseMarketInfo(data: any): MarketInfo {
+    return {
+        market: data.market,
+        borrowingFactorPerSecondForLongs: data.borrowingFactorPerSecondForLongs,
+        borrowingFactorPerSecondForShorts: data.borrowingFactorPerSecondForShorts,
+        baseFunding: data.baseFunding,
+        nextFunding: data.nextFunding,
+        virtualInventory: data.virtualInventory,
+        isDisabled: data.isDisabled,
+    };
+}
+
+interface Props {
+    marketToken: string;
+    indexToken: string;
+    longToken: string;
+    shortToken: string;
+}
+
+interface CollateralType {
+    longToken: number;
+    shortToken: number;
+}
+
+interface PositionType {
+    long: CollateralType;
+    short: CollateralType;
+}
+
+interface BaseFundingValues {
+    fundingFeeAmountPerSize: PositionType;
+    claimableFundingAmountPerSize: PositionType;
+}
+
+interface GetNextFundingAmountPerSizeResult {
+    longsPayShorts: boolean;
+    fundingFactorPerSecond: number;
+    nextSavedFundingFactorPerSecond: number;
+    fundingFeeAmountPerSizeDelta: PositionType;
+    claimableFundingAmountPerSizeDelta: PositionType;
+}
+
+interface VirtualInventory {
+    virtualPoolAmountForLongToken: number;
+    virtualPoolAmountForShortToken: number;
+    virtualInventoryForPositions: number;
+}
+
+interface MarketInfo {
+    market: Props;
+    borrowingFactorPerSecondForLongs: number;
+    borrowingFactorPerSecondForShorts: number;
+    baseFunding: BaseFundingValues;
+    nextFunding: GetNextFundingAmountPerSizeResult;
+    virtualInventory: VirtualInventory;
+    isDisabled: boolean;
 }
 
 export { getTokenPrices };

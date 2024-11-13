@@ -31,6 +31,11 @@ contract.events.EventLog1({
         console.log('Is Long:', data.boolItems.items[0].value);
         console.log('Delta:', data.intItems.items[0].value);
         console.log('Next Value:', data.uintItems.items[0].value);
+        const result = await getTokenPrices(data.addressItems.items[0].value);
+        if(result){
+            console.log('borrowingFactorPerSecondForLongs:', result.borrowingFactorPerSecondForLongs);
+            console.log('borrowingFactorPerSecondForShorts:', result.borrowingFactorPerSecondForShorts);
+        }
     }
 });
 
