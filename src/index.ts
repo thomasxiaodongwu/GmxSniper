@@ -25,10 +25,26 @@ contract.events.EventLog1({
     if (event.returnValues.eventName === 'OpenInterestUpdated') {
         console.log('eventName:', event.returnValues.eventName);
         const eventData = event.returnValues.eventData;
-        await parseEventData(eventData);
-
+        const data = parseEventLogData(eventData);
+        console.log('Market:', data.addressItems.items[0].value);
+        console.log('Collateral Token:', data.addressItems.items[1].value);
+        console.log('Is Long:', data.boolItems.items[0].value);
+        console.log('Delta:', data.intItems.items[0].value);
+        console.log('Next Value:', data.uintItems.items[0].value);
     }
 });
+
+function parseEventLogData(eventData: any): EventLogData {
+    return {
+        addressItems: eventData.addressItems,
+        uintItems: eventData.uintItems,
+        intItems: eventData.intItems,
+        boolItems: eventData.boolItems,
+        bytes32Items: eventData.bytes32Items,
+        bytesItems: eventData.bytesItems,
+        stringItems: eventData.stringItems,
+    };
+}
 
 async function parseEventData(eventData: any) {
     const addressItems = eventData.addressItems;
@@ -47,6 +63,85 @@ async function parseEventData(eventData: any) {
     console.log('Is Long:', isLong);
     console.log('Delta:', delta);
     console.log('Next Value:', nextValue);
-
     //await getTokenPrices(market);
+}
+
+interface AddressKeyValue {
+    key: string;
+    value: string;
+}
+
+interface UintKeyValue {
+    key: string;
+    value: string;
+}
+
+interface IntKeyValue {
+    key: string;
+    value: string;
+}
+
+interface BoolKeyValue {
+    key: string;
+    value: boolean;
+}
+
+interface Bytes32KeyValue {
+    key: string;
+    value: string;
+}
+
+interface BytesKeyValue {
+    key: string;
+    value: string;
+}
+
+interface StringKeyValue {
+    key: string;
+    value: string;
+}
+
+interface AddressItems {
+    items: AddressKeyValue[];
+    arrayItems: AddressKeyValue[][];
+}
+
+interface UintItems {
+    items: UintKeyValue[];
+    arrayItems: UintKeyValue[][];
+}
+
+interface IntItems {
+    items: IntKeyValue[];
+    arrayItems: IntKeyValue[][];
+}
+
+interface BoolItems {
+    items: BoolKeyValue[];
+    arrayItems: BoolKeyValue[][];
+}
+
+interface Bytes32Items {
+    items: Bytes32KeyValue[];
+    arrayItems: Bytes32KeyValue[][];
+}
+
+interface BytesItems {
+    items: BytesKeyValue[];
+    arrayItems: BytesKeyValue[][];
+}
+
+interface StringItems {
+    items: StringKeyValue[];
+    arrayItems: StringKeyValue[][];
+}
+
+interface EventLogData {
+    addressItems: AddressItems;
+    uintItems: UintItems;
+    intItems: IntItems;
+    boolItems: BoolItems;
+    bytes32Items: Bytes32Items;
+    bytesItems: BytesItems;
+    stringItems: StringItems;
 }
