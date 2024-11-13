@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 import fs from 'fs';
 import path from 'path';
+import { getTokenPrices } from './MarketInfo';
 
 console.log(__dirname);
 // const web3 = new Web3('https://arb-mainnet.g.alchemy.com/v2/Z08SBQ9CRg6OC8LhlObkEqWrDJyjY2CS');
@@ -16,15 +17,36 @@ const contract = new web3.eth.Contract(contractABI, contractAddress);
 contract.events.EventLog1({
     filter: {}, // 可选：根据需要过滤事件
     fromBlock: 'latest'
-}, (error: any, event: { returnValues: { msgSender: any; eventName: any; eventNameHash: any; topic1: any; eventData: any; }; }) => {
+}, async (error: any, event: { returnValues: { msgSender: any; eventName: any; eventNameHash: any; topic1: any; eventData: any; }; }) => {
     if (error) {
         console.error('Error:', error);
         return;
     }
-    console.log('Event received:');
-    console.log('msgSender:', event.returnValues.msgSender);
-    console.log('eventName:', event.returnValues.eventName);
-    console.log('eventNameHash:', event.returnValues.eventNameHash);
-    console.log('topic1:', event.returnValues.topic1);
-    console.log('eventData:', JSON.stringify(event.returnValues.eventData));
+    if (event.returnValues.eventName === 'OpenInterestUpdated') {
+        console.log('eventName:', event.returnValues.eventName);
+        const eventData = event.returnValues.eventData;
+        await parseEventData(eventData);
+
+    }
 });
+
+async function parseEventData(eventData: any) {
+    const addressItems = eventData.addressItems;
+    const boolItems = eventData.boolItems;
+    const intItems = eventData.intItems;
+    const uintItems = eventData.uintItems;
+
+    const market = addressItems[0]; // 或者使用 keys "market"
+    const collateralToken = addressItems[1];
+    const isLong = boolItems[0];
+    const delta = intItems[0];
+    const nextValue = uintItems[0];
+
+    console.log('Market:', market);
+    console.log('Collateral Token:', collateralToken);
+    console.log('Is Long:', isLong);
+    console.log('Delta:', delta);
+    console.log('Next Value:', nextValue);
+
+    await getTokenPrices(market);
+}

@@ -3,7 +3,6 @@ import path from "path";
 import fs from "fs";
 import { BigNumber, BigNumberish, ethers } from "ethers";
 
-console.log(__dirname);
 const web3 = new Web3('https://arb-mainnet.g.alchemy.com/v2/Z08SBQ9CRg6OC8LhlObkEqWrDJyjY2CS');
 const marketList = web3.utils.keccak256(web3.eth.abi.encodeParameter('string', 'MARKET_LIST'));
 
@@ -47,9 +46,8 @@ function getTokenPrice({ token, pricesByTokenAddress }) {
     return price;
 }
 
-async function main() {
+async function getTokenPrices(marketKey: string){
     try {
-        const marketKey = "0x47c031236e19d024b42f8AE6780E44A573170703";
         const tokenPricesResponse = await fetch(getTickersUrl());
         const tokenPrices = await tokenPricesResponse.json();
         const pricesByTokenAddress = {};
@@ -83,4 +81,4 @@ async function main() {
     }
 }
 
-main();
+export { getTokenPrices };
