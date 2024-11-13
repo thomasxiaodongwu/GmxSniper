@@ -36,8 +36,8 @@ async function parseEventData(eventData: any) {
     const intItems = eventData.intItems;
     const uintItems = eventData.uintItems;
 
-    const market = addressItems[0]; // 或者使用 keys "market"
-    const collateralToken = addressItems[1];
+    const market = addressItems[0][0].market; // 或者使用 keys "market"
+    const collateralToken = addressItems[0][1];
     const isLong = boolItems[0];
     const delta = intItems[0];
     const nextValue = uintItems[0];
@@ -48,5 +48,5 @@ async function parseEventData(eventData: any) {
     console.log('Delta:', delta);
     console.log('Next Value:', nextValue);
 
-    await getTokenPrices(market);
+    //await getTokenPrices(market);
 }

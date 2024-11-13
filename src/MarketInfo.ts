@@ -19,7 +19,7 @@ const contractReader = new web3.eth.Contract(contractABIReader, contractAddressR
 async function callGetAddress(key: string) {
     try {
         const address = await contractDataStore.methods.getAddress(key).call();
-        console.log('callGetAddress:', address);
+        //console.log('callGetAddress:', address);
         return address;
     } catch (error) {
         console.error('Error callGetAddress:', error);
@@ -29,7 +29,7 @@ async function callGetAddress(key: string) {
 async function callGetMarkets() {
     try {
         const market = await contractReader.methods.getMarkets("0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8", 0, 100).call();
-        console.log('callGetMarkets:', JSON.stringify(market));
+        //console.log('callGetMarkets:', JSON.stringify(market));
         return market;
     } catch (error) {
         console.error('Error callGetMarkets:', error);
