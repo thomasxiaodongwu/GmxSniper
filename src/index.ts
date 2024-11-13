@@ -2,6 +2,8 @@ import Web3 from 'web3';
 import fs from 'fs';
 import path from 'path';
 import { getTokenPrices } from './MarketInfo';
+import { getTokenInfo , calculate} from './tokens';
+
 
 console.log(__dirname);
 // const web3 = new Web3('https://arb-mainnet.g.alchemy.com/v2/Z08SBQ9CRg6OC8LhlObkEqWrDJyjY2CS');
@@ -26,15 +28,15 @@ contract.events.EventLog1({
         console.log('eventName:', event.returnValues.eventName);
         const eventData = event.returnValues.eventData;
         const data = parseEventLogData(eventData);
-        console.log('Market:', data.addressItems.items[0].value);
-        console.log('Collateral Token:', data.addressItems.items[1].value);
-        console.log('Is Long:', data.boolItems.items[0].value);
-        console.log('Delta:', data.intItems.items[0].value);
-        console.log('Next Value:', data.uintItems.items[0].value);
         const result = await getTokenPrices(data.addressItems.items[0].value);
         if(result){
-            console.log('borrowingFactorPerSecondForLongs:', result.borrowingFactorPerSecondForLongs);
-            console.log('borrowingFactorPerSecondForShorts:', result.borrowingFactorPerSecondForShorts);
+            const tokenInfo1 = getTokenInfo(result.market.indexToken);
+            const tokenInfo2 = getTokenInfo(result.market.shortToken);
+            console.log('Market:', tokenInfo1?.symbol + "|"+tokenInfo2?.symbol);
+            console.log('borrowingFactorPerSecondForLongs:', calculate(result.borrowingFactorPerSecondForLongs.toString()));
+            console.log('borrowingFactorPerSecondForShorts:', calculate(result.borrowingFactorPerSecondForShorts.toString()));
+            console.log('Is Long:', data.boolItems.items[0].value);
+            console.log('Next Value:', calculate(data.uintItems.items[0].value));
         }
     }
 });

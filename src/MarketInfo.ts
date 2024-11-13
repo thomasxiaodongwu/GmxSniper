@@ -69,7 +69,7 @@ async function getTokenPrices(marketKey: string) : Promise <MarketInfo | undefin
                     longTokenPrice: getTokenPrice({token: market.longToken, pricesByTokenAddress}),
                     shortTokenPrice: getTokenPrice({token: market.shortToken, pricesByTokenAddress}),
                 };
-                console.log(marketPrices);
+                //console.log(marketPrices);
                 break;
             }
         }
