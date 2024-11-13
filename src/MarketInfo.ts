@@ -62,7 +62,7 @@ async function getTokenPrices(marketKey: string) : Promise <MarketInfo | undefin
         const markets = [...(await callGetMarkets())];
         let marketPrices = {}
         for (const market of markets) {
-            console.log(market.marketToken);
+            //console.log(market.marketToken);
             if(marketKey === market.marketToken) {
                 marketPrices = {
                     indexTokenPrice: getTokenPrice({token: market.indexToken, pricesByTokenAddress}),
@@ -73,7 +73,7 @@ async function getTokenPrices(marketKey: string) : Promise <MarketInfo | undefin
                 break;
             }
         }
-        console.log("get into market detail:");
+        //console.log("get into market detail:");
         const marketInfos = await contractReader.methods.getMarketInfo("0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8", marketPrices, marketKey).call();
         return parseMarketInfo(marketInfos);
     } catch (error) {
