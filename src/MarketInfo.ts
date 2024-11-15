@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import path from "path";
 import fs from "fs";
 import {ethers} from "ethers";
+import {openInterestKey} from "./Transform"
 
 const web3 = new Web3('https://arb-mainnet.g.alchemy.com/v2/Z08SBQ9CRg6OC8LhlObkEqWrDJyjY2CS');
 const marketList = web3.utils.keccak256(web3.eth.abi.encodeParameter('string', 'MARKET_LIST'));
@@ -26,6 +27,16 @@ async function callGetAddress(key: string) {
     }
 }
 
+async function callGetUnit(key: string) {
+    try {
+        const currValue = await contractDataStore.methods.getUint(key).call();
+        //console.log('callGetAddress:', address);
+        return currValue;
+    } catch (error) {
+        console.error('Error callGetUnit:', error);
+    }
+}
+
 async function callGetMarkets() {
     try {
         const market = await contractReader.methods.getMarkets("0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8", 0, 100).call();
@@ -46,6 +57,29 @@ function getTokenPrice({ token, pricesByTokenAddress }) {
     return price;
 }
 
+interface insterest {
+    indexInsterest: string;
+    longInsterest: string;
+    shortInsterest: string;
+}
+
+async function initTokenPrices(){
+    try {
+        let result: Map<string, insterest> = new Map();
+        const markets = [...(await callGetMarkets())];
+        let marketPrices = {}
+        for (const market of markets) {
+            const indexTokenInsterest = await callGetUnit(openInterestKey(market.marketToken, market.indexToken, true));
+            const longTokenInsterest = await callGetUnit(openInterestKey(market.marketToken, market.longToken, true));
+            const shortTokenInsterest = await callGetUnit(openInterestKey(market.marketToken, market.shortToken, false));
+            result.set(market.marketToken.toString(), {indexInsterest: indexTokenInsterest, longInsterest: longTokenInsterest, shortInsterest: shortTokenInsterest});
+        }
+        return result;
+    } catch (error) {
+        console.error('Error in initTokenPrices:', error);
+    }
+}
+
 async function getTokenPrices(marketKey: string) : Promise <MarketInfo | undefined>   {
     try {
         const tokenPricesResponse = await fetch(getTickersUrl());
@@ -62,18 +96,15 @@ async function getTokenPrices(marketKey: string) : Promise <MarketInfo | undefin
         const markets = [...(await callGetMarkets())];
         let marketPrices = {}
         for (const market of markets) {
-            //console.log(market.marketToken);
             if(marketKey === market.marketToken) {
                 marketPrices = {
                     indexTokenPrice: getTokenPrice({token: market.indexToken, pricesByTokenAddress}),
                     longTokenPrice: getTokenPrice({token: market.longToken, pricesByTokenAddress}),
                     shortTokenPrice: getTokenPrice({token: market.shortToken, pricesByTokenAddress}),
                 };
-                //console.log(marketPrices);
                 break;
             }
         }
-        //console.log("get into market detail:");
         const marketInfos = await contractReader.methods.getMarketInfo("0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8", marketPrices, marketKey).call();
         return parseMarketInfo(marketInfos);
     } catch (error) {
@@ -139,4 +170,4 @@ interface MarketInfo {
     isDisabled: boolean;
 }
 
-export { getTokenPrices };
+export { getTokenPrices, callGetMarkets, initTokenPrices };
