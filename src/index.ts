@@ -25,7 +25,7 @@ function sumReturnUint256(a: number, b: number): number {
 
 async function main() {
     const iresult = await initTokenPrices();
-    
+    console.log(iresult);
     if(iresult) {
         contract.events.EventLog1({
             filter: {}, // 可选：根据需要过滤事件
@@ -58,6 +58,14 @@ async function main() {
                                 iss.longInsterest = data.uintItems.items[0].value;
                                 iresult.set(data.addressItems.items[0].value, iss);
                             } else {
+                                console.log('else long Delta:', data.intItems.items[0].value);
+                                console.log('else long Number Delta:', Number(data.intItems.items[0].value));
+                                console.log('iss.longInsterest:', iss.longInsterest);
+                                console.log('number iss.longInsterest:', Number(iss.longInsterest));
+                                console.log('iss.indexInsterest:', iss.indexInsterest);
+                                console.log('number iss.indexInsterest:', Number(iss.indexInsterest));
+                                console.log('long nextvalue:', data.uintItems.items[0].value);
+                                console.log('number long nextvalue:', Number(data.uintItems.items[0].value));
                                 console.error("compute with long next value wrong, please check");
                             }
                         }
@@ -73,6 +81,12 @@ async function main() {
                                 iss.shortInsterest = data.uintItems.items[0].value;
                                 iresult.set(data.addressItems.items[0].value, iss);
                             } else {
+                                console.log('else short Delta:', data.intItems.items[0].value);
+                                console.log('else short Number Delta:', Number(data.intItems.items[0].value));
+                                console.log('iss.shortInsterest:', iss.shortInsterest);
+                                console.log('number iss.shortInsterest:', Number(iss.shortInsterest));
+                                console.log('short nextvalue:', data.uintItems.items[0].value);
+                                console.log('number short nextvalue:', Number(data.uintItems.items[0].value));
                                 console.error("compute with short next value wrong, please check");
                             }
                         }
