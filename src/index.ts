@@ -25,6 +25,7 @@ function sumReturnUint256(a: number, b: number): number {
 
 async function main() {
     const iresult = await initTokenPrices();
+    
     if(iresult) {
         contract.events.EventLog1({
             filter: {}, // 可选：根据需要过滤事件
