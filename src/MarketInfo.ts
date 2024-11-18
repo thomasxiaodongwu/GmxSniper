@@ -127,7 +127,7 @@ async function initTokenPrices(){
     try {
         let result: Map<string, insterest> = new Map();
         const markets = [...(await callGetMarkets())];
-        console.log(markets);
+        // console.log(markets);
         for (const market of markets) {
             const temp = {
                 marketToken: market.marketToken,
@@ -141,10 +141,10 @@ async function initTokenPrices(){
             const indexTokenInsterest = await callGetUnit(keys.openInterestKey(market.marketToken, market.indexToken, true));
             const longTokenInsterest = await callGetUnit(keys.openInterestKey(market.marketToken, market.longToken, true));
             const shortTokenInsterest = await callGetUnit(keys.openInterestKey(market.marketToken, market.shortToken, false));
-            console.log('indexTokenInsterest', indexTokenInsterest);
-            console.log('longTokenInsterest', longTokenInsterest);
-            console.log('shortTokenInsterest', shortTokenInsterest);
-            //result.set(market.marketToken.toString(), {indexInsterest: indexTokenInsterest, longInsterest: longTokenInsterest, shortInsterest: shortTokenInsterest});
+            // console.log('indexTokenInsterest', indexTokenInsterest);
+            // console.log('longTokenInsterest', longTokenInsterest);
+            // console.log('shortTokenInsterest', shortTokenInsterest);
+            result.set(market.marketToken.toString(), {indexInsterest: indexTokenInsterest, longInsterest: longTokenInsterest, shortInsterest: shortTokenInsterest});
         }
         return result;
     } catch (error) {
